@@ -17,7 +17,6 @@ var DateTime = (function(Date,Math,undefined){
 	'TimezoneOffset'
 	]
 	var StringMethodNams = [
-		'String',
 		'TimeString',
 		'DateString',
 		'GMTString',
@@ -26,6 +25,18 @@ var DateTime = (function(Date,Math,undefined){
 		'LocaleTimeString',
 		'LocaleDateString'
 	]
+
+	var Format = [
+		'yyyy',//year
+		'yy',
+		'MM', // month
+		'dd', // day
+		'HH', // hour
+		'mm', // minutes
+		'ss', //second
+		'ms' //Millisecond
+	]
+	
 	function DateTime(){
 		return this._init(arguments);
 	}
@@ -63,7 +74,10 @@ var DateTime = (function(Date,Math,undefined){
 	/**
 	 * DateTime methods
 	 **/
-	 proto.format = function(){
+	 proto.toString = function(formatter){
+	 	if(typeof formatter === undefined){
+	 		return this._date.toString();
+	 	}
 
 	 }
 	 proto.parse = function(){
@@ -115,6 +129,12 @@ var DateTime = (function(Date,Math,undefined){
 	 proto.compareTo = function(dateTime){
 
 	 }
+	 proto.validDate = function(dateTime){
+	 	if(typeof dateTime === undefined){
+	 		dateTime = this;
+	 	}
+	 	return !isNaN(+dateTime._date);
+	 }
 
 	 /**
 	  * static method 
@@ -160,7 +180,7 @@ var DateTime = (function(Date,Math,undefined){
 		return typeof arg === 'number';
 	}
 	function isString(arg){
-		return typeof arg === "sring";
+		return typeof arg === "string";
 	}
 	return DateTime;		
 })(Date,Math)
