@@ -14,29 +14,36 @@ var DateTime = (function(Date,Math,undefined){
 	'Day',          // 7
 	'Year',         // 8
 	'Time',
-	'TimezoneOffset'
+	'TimezoneOffset',
+	'UTCDate',
+	'UTCDay',
+	'UTCMonth',
+	'UTCFullYear',
+	'UTCHours',
+	'UTCMinutes',
+	'UTCSeconds',
+	'UTCMilliseconds'
 	]
 	var StringMethodNams = [
 		'TimeString',
-		'DateString',
 		'GMTString',
 		'UTCString',
 		'LocaleString',
 		'LocaleTimeString',
-		'LocaleDateString'
+		'LocaleDateString',
+		'DateString'
 	]
+	var Format = {
+		'Year':/y{4}/g,
+		'Short_Year':/y{2}/g,
+		'Month':/MM/g,
+		'Day':/dd/g,
+		'Hour':/HH/g,
+		'Minute':/mm/g,
+		'Second':/ss/g,
+		'Millisecond':/ms/g
+	}
 
-	var Format = [
-		'yyyy',//year
-		'yy',
-		'MM', // month
-		'dd', // day
-		'HH', // hour
-		'mm', // minutes
-		'ss', //second
-		'ms' //Millisecond
-	]
-	
 	function DateTime(){
 		return this._init(arguments);
 	}
@@ -67,17 +74,42 @@ var DateTime = (function(Date,Math,undefined){
 			var sec = args[5];
 			this._date = new Date(year,month,day,hour,min,sec);
 		}
-		cloneMethod();
+		//cloneMethod();
 		return this;
 	}
 
+	cloneMethod(MethodNames,function(name){
+		proto['get'+ name] = function(){
+			return this._date['get' + name]();
+		}
+		// need clone set method
+		proto['set' + name] = function(value){
+			return this._date['set'+ name](value);
+		}
+	});
+	cloneMethod(StringMethodNams,function(name){
+		proto['to' + name] = function(){
+			return this._date['to' + name]();
+		}
+	})
 	/**
 	 * DateTime methods
 	 **/
 	 proto.toString = function(formatter){
-	 	if(typeof formatter === undefined){
+	 	if(formatter === undefined){
 	 		return this._date.toString();
 	 	}
+	 	if(Format.Year.test(formatter)){
+	 		formatter = formatter.replace(Format.Year,this._date.getUTCFullYear()+"");
+	 	}else if(Format.Short_Year.test(formatter)){
+	 		formatter = formatter.replace(Format.Short_Year,(this._date.getUTCFullYear()+"").substr(2,2));
+	 	}
+	 	return formatter.replace(Format.Month,this._date.getUTCMonth()+1)
+	 					.replace(Format.Day,this._date.getUTCDate())
+	 					.replace(Format.Hour,this._date.getUTCHours())
+	 					.replace(Format.Minute,this._date.getUTCMinutes())
+	 					.replace(Format.Second,this._date.getUTCSeconds())
+	 					.replace(Format.Millisecond,this._date.getUTCMilliseconds());
 
 	 }
 	 proto.parse = function(){
@@ -135,7 +167,9 @@ var DateTime = (function(Date,Math,undefined){
 	 	}
 	 	return !isNaN(+dateTime._date);
 	 }
+	 proto.getDayInMonth = function(){
 
+	 }
 	 /**
 	  * static method 
 	  **/
@@ -145,36 +179,23 @@ var DateTime = (function(Date,Math,undefined){
 	 DateTime.now = function(){
 
 	 }
+	 /*
 	 DateTime.UTC = function(year,month,date,hrs,min,sec){
 
 	 }
+	 **/
 	 DateTime.clone = function(dateTime){
 
 	 }
+
 	/**
 	 * clone get and set methods from Date
 	 **/
-	function cloneMethod(){
-		var length = MethodNames.length;
-		for(var i =0;i< length;i++){
-			var mn = 'get'+ MethodNames[i];
-			proto[mn]  = function(){
-				return this._date[mn]();
-			}
-			mn = 'set' + MethodNames[i];
-			proto[mn] = function(){
-				return this._date[mn]();
-			}
-		}
-		length = StringMethodNams.length;
-		for(var i =0; i <length;i++){
-			var mn = 'to'+ StringMethodNams[i];
-			proto[mn] = function(){
-				return this._date[mn]();
-			}
-		}
-	}
-
+	 function cloneMethod(names,fun){
+	 	for(var i =0;i<names.length;i++){
+	 		fun(names[i],i);
+	 	}
+	 }
 
 	function isNumber(arg){
 		return typeof arg === 'number';
