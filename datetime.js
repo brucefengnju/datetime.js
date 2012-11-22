@@ -104,15 +104,87 @@ var DateTime = (function(Date,Math,undefined){
 	 	}else if(Format.Short_Year.test(formatter)){
 	 		formatter = formatter.replace(Format.Short_Year,(this._date.getUTCFullYear()+"").substr(2,2));
 	 	}
-	 	return formatter.replace(Format.Month,this._date.getUTCMonth()+1)
-	 					.replace(Format.Day,this._date.getUTCDate())
-	 					.replace(Format.Hour,this._date.getUTCHours())
-	 					.replace(Format.Minute,this._date.getUTCMinutes())
-	 					.replace(Format.Second,this._date.getUTCSeconds())
-	 					.replace(Format.Millisecond,this._date.getUTCMilliseconds());
+	 	var monstr = "";
+	 	if(this._date.getUTCMonth() + 1< 10){
+	 		monstr = "0" + (this._date.getUTCMonth() + 1);
+	 	}else{
+	 		monstr = '' + this._date.getUtcDate();
+	 	}
+	 	var daystr = '' + this._date.getUtcDate();
+	 	if(this._date.getUTCDate() < 10){
+	 		daystr = '0' + daystr;
+	 	}
+	 	var hourstr = '';
+	 	if(this._date.getUTCHours()<10){
+	 		hourstr = '0' + this._date.getUTCHours();
+	 	}else{
+	 		hourstr = "" + this._date.getUTCHours();
+	 	}
+	 	var minstr = '' + this._date.getUTCMinutes();
+	 	if(this._date.getUTCMinutes < 10){
+	 		minstr = '0' + minstr;
+	 	}
+	 	var seconstr = '' + this._date.getUTCSeconds();
+	 	if(this._date.getUTCSeconds()<10){
+	 		seconstr = '0' + seconstr;
+	 	}
+	 	var milistr = '' + this._date.getUTCMilliseconds();
+	 	if(this._date.getUTCMilliseconds<10){
+	 		milistr = '0' + milistr;
+	 	}
+	 	return formatter.replace(Format.Month,monstr)
+	 					.replace(Format.Day,daystr)
+	 					.replace(Format.Hour,hourstr)
+	 					.replace(Format.Minute,minstr)
+	 					.replace(Format.Second,seconstr)
+	 					.replace(Format.Millisecond,milistr);
 
 	 }
-	 proto.parse = function(){
+	 proto.parse = function(datestr,formatter){
+	 	if(typeof formatter === undefined){
+	 		var tdate = new Date(datestr*1);
+	 		return new DateTime(tdate);
+	 	}
+	 	var year,month,day,hour,minute,second,millisecond;
+	 	var result;
+	 	if((result = Format.Year.exec(formatter)) !== null){
+	 		year = datestr.substr(result.index,result[0].length)*1;
+	 	}else if ((result = Format.Short_Year.exec(formatter)) !== null) {
+	 		year = datestr.substr(result.index,result[0].length)*1 +2000;
+	 	}else{
+	 		return null;
+	 	}
+
+	 	if ((result = Format.Month.exec(formatter)) !== null) {
+	 		month = datestr.substr(result.index,result[0].length)*1;
+	 	}else{
+	 		return null;
+	 	}
+
+	 	if ((result = Format.Day.exec(formatter)) !== null){
+	 		day = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+	 		return null;
+	 	}
+	 	if ((result = Format.Hour.exec(formatter)) !== null){
+	 		hour = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+	 		hour = 0;
+	 	}
+
+	 	if ((result = Format.Minute.exec(formatter)) !== null){
+	 		minute = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+	 		minute = 0;
+	 	}
+
+	 	if ((result = Format.Second.exec(formatter)) !== null){
+	 		second = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+	 		second = 0;
+	 	}
+
+	 	return new DateTime(year,month,day,hour,minute,second);
 
 	 }
 	 proto.addYears = function(delta){
