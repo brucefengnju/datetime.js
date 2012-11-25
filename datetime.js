@@ -74,7 +74,6 @@ var DateTime = (function(Date,Math,undefined){
 			var sec = args[5];
 			this._date = new Date(year,month,day,hour,min,sec);
 		}
-		//cloneMethod();
 		return this;
 	}
 
@@ -91,7 +90,7 @@ var DateTime = (function(Date,Math,undefined){
 		proto['to' + name] = function(){
 			return this._date['to' + name]();
 		}
-	})
+	});
 	/**
 	 * DateTime methods
 	 **/
@@ -141,10 +140,13 @@ var DateTime = (function(Date,Math,undefined){
 
 	 }
 	 proto.parse = function(datestr,formatter){
-	 	if(typeof formatter === undefined){
-	 		var tdate = new Date(datestr*1);
-	 		return new DateTime(tdate);
+	 	if(typeof datestr == DateTime || typeof datestr == Date){
+	 		return new DateTime(datestr);
 	 	}
+	 	if(typeof formatter === undefined){
+	 		return Date.parse(datestr);
+	 	}
+
 	 	var year,month,day,hour,minute,second,millisecond;
 	 	var result;
 	 	if((result = Format.Year.exec(formatter)) !== null){
@@ -187,51 +189,76 @@ var DateTime = (function(Date,Math,undefined){
 	 	return new DateTime(year,month,day,hour,minute,second);
 
 	 }
+
 	 proto.addYears = function(delta){
-	 	return this;
+
+	 	return this.addMonths(value * 12);
 
 	 }
 	 proto.addMonths = function(delta){
-	 	return this;
+        var n = this.getDate();
+        this.setDate(1);
+        this.setMonth(this.getMonth() + delta * 1);
+        this.setDate(Math.min(n, DateTime.getDaysInMonth(this.getFullYear(), this.getMonth())));
+        return this;
 	 }
 	 proto.addDays = function(delta){
+	 	this.setDate(this.getDate() + value * 1);
 	 	return this;
 	 }
 	 proto.addHours = function(delta){
-	 	return this;
+	 	return this.addMilliseconds(value * 3600000);
 	 }
 	 proto.addMinutes = function(delta){
-	 	return this;
+	 	return this.addMilliseconds(value * 60000); /* 60*1000 */
 	 }
 	 proto.addSeconds = function(delta){
-	 	return this;
+	 	return this.addMilliseconds(value * 1000); 
 	 }
 	 proto.addMilliseconds = function(delta){
+	 	this.setMilliseconds(this.getMilliseconds() + delta * 1);
 	 	return this;
 	 }
 	 proto.spanYears = function(dateTime){
-
+	 	return this.getFullYear() - datetime.getFullYear();
 	 }
 	 proto.spanMonths = function(dateTime){
-
+	 	return this.getMonth() - dateTime.getMonth();
 	 }
 	 proto.spanDays = function(dateTime){
+	 	return this.getDate() - dateTime.getDate();
 
 	 }
 	 proto.spanHours = function(dateTime){
+	 	return this.getHours() - datetime.getHours();
 
 	 }
 	 proto.spanMinutes = function(dateTime){
+	 	return this.getMinutes() - datetime.getMinutes();
 
 	 }
 	 proto.spanSeconds = function(dateTime){
+	 	return this.getSeconds() - datetime.getSeconds();
 
 	 }
 	 proto.spanMilliseconds = function(dateTime){
+	 	return this.getMilliseconds() - dateTime.getMilliseconds();
 
 	 }
+	 proto.toDate = function(){
+	 	return this._date;
+	 }
 	 proto.compareTo = function(dateTime){
+	 	if(isNan(dateTime)){
+	 		throw new Error(dateTime);
+	 	}
+	 	if(dateTime instanceof DateTime){
+	 		return (this._date < dateTime.toDate()) ? -1 : (this._date > dateTime.toDate()) ? 1 : 0;
+	 	}
 
+	 }
+	 proto.clone = function(){
+	 	return new DateTime(this._date.getTime());
 	 }
 	 proto.validDate = function(dateTime){
 	 	if(typeof dateTime === undefined){
@@ -239,27 +266,27 @@ var DateTime = (function(Date,Math,undefined){
 	 	}
 	 	return !isNaN(+dateTime._date);
 	 }
-	 proto.getDayInMonth = function(){
-
-	 }
 	 /**
 	  * static method 
 	  **/
 	 DateTime.today = function(){
-
+	 	DateTime dt = DateTime.now();
+	 	dt.setHours(0)
+	 	  .setMinutes(0)
+	 	  .setSeconds(0)
+	 	  .setMilliseconds(0);
+	 	return dt;
 	 }
 	 DateTime.now = function(){
-
+	 	DateTime dt = new DateTime();
+	 	return dt;
 	 }
-	 /*
-	 DateTime.UTC = function(year,month,date,hrs,min,sec){
-
+	 DateTime.isLeapYear = function(year){
+	 	return ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0); 
 	 }
-	 **/
-	 DateTime.clone = function(dateTime){
-
+	 DateTime.getDaysInMonth = function(year,month){
+	 	return [31, (DateTime.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
 	 }
-
 	/**
 	 * clone get and set methods from Date
 	 **/
@@ -275,5 +302,6 @@ var DateTime = (function(Date,Math,undefined){
 	function isString(arg){
 		return typeof arg === "string";
 	}
+	
 	return DateTime;		
 })(Date,Math)
