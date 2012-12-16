@@ -102,7 +102,8 @@ var DateTime = (function(Date,Math,undefined){
 			return this._date['get' + name]();
 		}
 		proto['set' + name] = function(value){
-			return this._date['set'+ name](value);
+			this._date['set'+ name](value);
+			return this;
 		}
 	});
 
@@ -275,7 +276,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.addYears = function(delta){
 
-	 	return this.addMonths(value * 12);
+	 	return this.addMonths(delta * 12);
 	}
 
 	/**
@@ -295,7 +296,7 @@ var DateTime = (function(Date,Math,undefined){
 	 * add delta days to datetime
 	**/
 	proto.addDays = function(delta){
-	 	this.setDate(this.getDate() + value * 1);
+	 	this.setDate(this.getDate() + delta * 1);
 	 	return this;
 	}
 
@@ -305,7 +306,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.addHours = function(delta){
 
-		return this.addMilliseconds(value * 3600000);
+		return this.addMilliseconds(delta * 3600000);
 	}
 
 	/**
@@ -314,7 +315,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.addMinutes = function(delta){
 	 	
-	 	return this.addMilliseconds(value * 60000); /* 60*1000 */
+	 	return this.addMilliseconds(delta * 60000); /* 60*1000 */
 	}
 
 	/**
@@ -323,7 +324,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.addSeconds = function(delta){
 
-		return this.addMilliseconds(value * 1000); 
+		return this.addMilliseconds(delta * 1000); 
 	}
 
 	/**
@@ -342,7 +343,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.spanYears = function(dateTime){
 	
-	 	return this.getFullYear() - datetime.getFullYear();
+	 	return this.getFullYear() - dateTime.getFullYear();
 	}
 	
 	/**
@@ -369,7 +370,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.spanHours = function(dateTime){
 
-	 	return this.getHours() - datetime.getHours();
+	 	return this.getHours() - dateTime.getHours();
 	}
 
 	/**
@@ -378,7 +379,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.spanMinutes = function(dateTime){
 
-	 	return this.getMinutes() - datetime.getMinutes();
+	 	return this.getMinutes() - dateTime.getMinutes();
 	}
 	
 	/**
@@ -387,7 +388,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	proto.spanSeconds = function(dateTime){
 
-	 	return this.getSeconds() - datetime.getSeconds();
+	 	return this.getSeconds() - dateTime.getSeconds();
 	}
 	
 	/**
@@ -449,7 +450,7 @@ var DateTime = (function(Date,Math,undefined){
 	 * today for example 2012-12-12 00:00:00
 	**/
 	DateTime.today = function(){
-	 	DateTime dt = DateTime.now();
+	 	var dt = DateTime.now();
 	 	dt.setHours(0)
 	 	  .setMinutes(0)
 	 	  .setSeconds(0)
@@ -464,7 +465,7 @@ var DateTime = (function(Date,Math,undefined){
 	**/
 	DateTime.now = function(){
 	
-	 	DateTime dt = new DateTime();
+	 	var dt = new DateTime();
 	 	return dt;
 	}
 
