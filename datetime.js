@@ -370,6 +370,7 @@ var DateTime = (function(Date,Math,undefined){
 	 	}
 	 	var year,month,day,hour,minute,second,millisecond;
 	 	var result;
+	 	clearFormatter();
 	 	if(formatter.match(Format.Year)){
 	 		Format.Year.lastIndex = 0;
 	 		result = Format.Year.exec(formatter);
