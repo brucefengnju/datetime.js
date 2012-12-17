@@ -128,57 +128,57 @@ var DateTime = (function(Date,Math,undefined){
 
 	 		return this._date.toString();
 	 	}
-
+	 	Format.Year.lastIndex = 0;
+	 	Format.Short_Year.lastIndex = 0;
 	 	if(Format.Year.test(formatter)){
-
+	 		Format.Year.lastIndex = 0;
 	 		formatter = formatter.replace(Format.Year,this._date.getUTCFullYear()+"");
 
 	 	}else if(Format.Short_Year.test(formatter)){
-
+	 		Format.Short_Year.lastIndex = 0;
 	 		formatter = formatter.replace(Format.Short_Year,(this._date.getUTCFullYear()+"").substr(2,2));
 	 	}
 
 	 	var monstr = "";
 
-	 	if(this._date.getUTCMonth() + 1< 10){
+	 	if(this._date.getMonth() + 1< 10){
 
-	 		monstr = "0" + (this._date.getUTCMonth() + 1);
-
+	 		monstr = "0" + (this._date.getMonth() + 1);
 	 	}else{
 
-	 		monstr = '' + this._date.getUtcDate();
+	 		monstr = '' + (this._date.getMonth() +1);
 	 	}
 
-	 	var daystr = '' + this._date.getUtcDate();
+	 	var daystr = '' + this._date.getDate();
 
-	 	if(this._date.getUTCDate() < 10){
+	 	if(this._date.getDate() < 10){
 
 	 		daystr = '0' + daystr;
 	 	}
 
 	 	var hourstr = '';
 
-	 	if(this._date.getUTCHours()<10){
+	 	if(this._date.getHours()<10){
 
-	 		hourstr = '0' + this._date.getUTCHours();
+	 		hourstr = '0' + this._date.getHours();
 
 	 	}else{
 
-	 		hourstr = "" + this._date.getUTCHours();
+	 		hourstr = "" + this._date.getHours();
 
 	 	}
 
-	 	var minstr = '' + this._date.getUTCMinutes();
+	 	var minstr = '' + this._date.getMinutes();
 
-	 	if(this._date.getUTCMinutes < 10){
+	 	if(this._date.getMinutes() < 10){
 	 		minstr = '0' + minstr;
 	 	}
-	 	var seconstr = '' + this._date.getUTCSeconds();
-	 	if(this._date.getUTCSeconds()<10){
+	 	var seconstr = '' + this._date.getSeconds();
+	 	if(this._date.getSeconds()<10){
 	 		seconstr = '0' + seconstr;
 	 	}
-	 	var milistr = '' + this._date.getUTCMilliseconds();
-	 	if(this._date.getUTCMilliseconds<10){
+	 	var milistr = '' + this._date.getMilliseconds();
+	 	if(this._date.getMilliseconds()<10){
 	 		milistr = '0' + milistr;
 	 	}
 	 	return formatter.replace(Format.Month,monstr)
@@ -187,88 +187,7 @@ var DateTime = (function(Date,Math,undefined){
 	 					.replace(Format.Minute,minstr)
 	 					.replace(Format.Second,seconstr)
 	 					.replace(Format.Millisecond,milistr);
-
 	}
-
-	/**
-	 * @public
-	 * parse DateTime string
-	**/
-	proto.parse = function(datestr,formatter){
-
-	 	if(typeof datestr == DateTime || typeof datestr == Date){
-
-	 		return new DateTime(datestr);
-	 	}
-
-	 	if(typeof formatter === undefined){
-
-	 		return Date.parse(datestr);
-	 	}
-
-	 	var year,month,day,hour,minute,second,millisecond;
-
-	 	var result;
-
-	 	if((result = Format.Year.exec(formatter)) !== null){
-
-	 		year = datestr.substr(result.index,result[0].length)*1;
-
-	 	}else if ((result = Format.Short_Year.exec(formatter)) !== null) {
-
-	 		year = datestr.substr(result.index,result[0].length)*1 +2000;
-
-	 	}else{
-	 		return null;
-	 	}
-
-	 	if ((result = Format.Month.exec(formatter)) !== null) {
-
-	 		month = datestr.substr(result.index,result[0].length)*1;
-
-	 	}else{
-
-	 		return null;
-	 	}
-
-	 	if ((result = Format.Day.exec(formatter)) !== null){
-
-	 		day = datestr.substr(result.index,result[0].length)*1;
-
-	 	} else{
-
-	 		return null;
-	 	}
-	 	if ((result = Format.Hour.exec(formatter)) !== null){
-
-	 		hour = datestr.substr(result.index,result[0].length)*1;
-
-	 	} else{
-
-	 		hour = 0;
-	 	}
-
-	 	if ((result = Format.Minute.exec(formatter)) !== null){
-
-	 		minute = datestr.substr(result.index,result[0].length)*1;
-
-	 	} else{
-
-	 		minute = 0;
-	 	}
-
-	 	if ((result = Format.Second.exec(formatter)) !== null){
-
-	 		second = datestr.substr(result.index,result[0].length)*1;
-
-	 	} else{
-
-	 		second = 0;
-	 	}
-
-	 	return new DateTime(year,month,day,hour,minute,second);
-
-	 }
 
 	/**
 	 * @public 
@@ -416,13 +335,14 @@ var DateTime = (function(Date,Math,undefined){
 	 * @return 1 while it is later than dateime
 	**/
 	proto.compareTo = function(dateTime){
-	 	if(isNan(dateTime)){
-	 		throw new Error(dateTime);
-	 	}
-
 	 	if(dateTime instanceof DateTime){
 	 		return (this._date < dateTime.toDate()) ? -1 : (this._date > dateTime.toDate()) ? 1 : 0;
+	 	}else if(dateTime instanceof Date){
+	 		return (this._date < dateTime) ? -1 : (this._date > dateTime) ? 1 : 0;
+	 	}else{
+	 		throw new TypeError(dateTime); 
 	 	}
+
 	}
 
 	/**
@@ -435,14 +355,97 @@ var DateTime = (function(Date,Math,undefined){
 	}
 
 	/**
-	 * @public 
+	 * static method
+	 * parse DateTime string
+	**/
+	DateTime.parse = function(datestr,formatter){
+
+	 	if(typeof datestr == DateTime || typeof datestr == Date){
+
+	 		return new DateTime(datestr);
+	 	}
+	 	if(typeof formatter === undefined){
+
+	 		return Date.parse(datestr);
+	 	}
+	 	var year,month,day,hour,minute,second,millisecond;
+	 	var result;
+	 	if(formatter.match(Format.Year)){
+	 		Format.Year.lastIndex = 0;
+	 		result = Format.Year.exec(formatter);
+	 		year = datestr.substr(result.index,result[0].length)*1;
+	 	}else if(formatter.match(Format.Short_Year)) {
+	 		Format.Short_Year.lastIndex = 0;
+	 		result = Format.Short_Year.exec(formatter);
+	 		year = datestr.substr(result.index,result[0].length)*1 +2000;
+	 	}else{
+	 		return null;
+	 	}
+
+	 	if (formatter.match(Format.Month)) {
+	 		Format.Month.lastIndex = 0;
+	 		result = Format.Month.exec(formatter);
+	 		month = datestr.substr(result.index,result[0].length)*1;
+	 	}else{
+
+	 		return null;
+	 	}
+	 	if (formatter.match(Format.Day)){
+	 		Format.Day.lastIndex = 0;
+	 		result = Format.Day.exec(formatter);
+	 		day = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+
+	 		return null;
+	 	}
+	 	if(formatter.match(Format.Hour)){
+	 		Format.Hour.lastIndex = 0;
+	 		result = Format.Hour.exec(formatter);
+	 		hour = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+
+	 		hour = 0;
+	 	}
+
+	 	if (formatter.match(Format.Minute)){
+	 		Format.Minute.lastIndex = 0;
+	 		result = Format.Minute.exec(formatter);
+	 		minute = datestr.substr(result.index,result[0].length)*1;
+
+	 	} else{
+
+	 		minute = 0;
+	 	}
+
+	 	if (formatter.match(Format.Second)){
+	 		Format.Second.lastIndex = 0;
+	 		result = Format.Second.exec(formatter);
+	 		second = datestr.substr(result.index,result[0].length)*1;
+	 	} else{
+
+	 		second = 0;
+	 	}
+
+	 	return new DateTime(year,month-1,day,hour,minute,second);
+	 }
+	/**
+	 * static method
 	 * validate datetime
 	**/
-	proto.validDate = function(dateTime){
+	DateTime.validDate = function(dateTime){
 	 	if(typeof dateTime === undefined){
 	 		dateTime = this;
 	 	}
-	 	return !isNaN(+dateTime._date);
+	 	if(dateTime instanceof DateTime){
+
+	 		return !isNaN(+dateTime._date);	
+	 	}else if(dateTime instanceof Date){
+
+	 		return !isNaN(+dateTime);	
+	 	}else{
+	 		throw new TypeError(dateTime); 
+	 	}
+	 	
 	}
 
 	/**
@@ -503,6 +506,14 @@ var DateTime = (function(Date,Math,undefined){
 	
 	function isString(arg){
 		return typeof arg === "string";
+	}
+
+	function clearFormatter(){
+		for(var item in Format){
+			if(Format.hasOwnProperty(item)){
+				item.lastIndex = 0;
+			}
+		}
 	}
 	
 	return DateTime;	
