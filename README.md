@@ -46,7 +46,7 @@ DateTime has all methods of Date.
 	var spanMin = d1.spanMinute(d2);
 	var spanSec = d1.spanSecond(d2);
 
-### and some another methods
+### Some another methods
 
 	var time = d3.toDate();
 	var valid = DateTime.validDate(d3);
