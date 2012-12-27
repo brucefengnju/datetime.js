@@ -3,9 +3,9 @@
 DateTime is a thin wrapper around JavaScript's native.object and provides enhanced functionality for parsing, formatting, and manipulating dates.
 
 ## How to use
-	DateTime has all methods of Date.
+DateTime has all methods of Date.
 
-	### You can get DateTime object as follows:
+### You can get DateTime object as follows:
 
 	var d1 = new DateTime();
 	var d2 = new DateTime(2012,11,27);
@@ -16,7 +16,7 @@ DateTime is a thin wrapper around JavaScript's native.object and provides enhanc
 	var d7 = DateTime.today();
 	var d8 = DateTime.now();
 
-	### You can get the string and parse string
+### You can get the string and parse string
 
 	var timeStr1 = d1.toString("Time is yyyy-MM-dd HH:mm:ss");
 	var timeStr2 = d1.toString("also can get like this yy-MM-dd");
@@ -29,7 +29,7 @@ DateTime is a thin wrapper around JavaScript's native.object and provides enhanc
 	var same = d4.compareTo(d1);
 	var later = d8.compareTo(d7);
 
-	### DateTime support add and span methods
+### DateTime support add and span methods
 	
 	d1.addYears(year);
 	d1.addMonths(month);
@@ -46,7 +46,7 @@ DateTime is a thin wrapper around JavaScript's native.object and provides enhanc
 	var spanMin = d1.spanMinute(d2);
 	var spanSec = d1.spanSecond(d2);
 
-	### and some another methods
+### and some another methods
 
 	var time = d3.toDate();
 	var valid = DateTime.validDate(d3);
