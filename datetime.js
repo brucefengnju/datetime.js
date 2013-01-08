@@ -190,6 +190,13 @@ var DateTime = (function(Date,Math,undefined){
 	}
 
 	/**
+	 * @public
+	 * toJSON method
+	**/
+	proto.toJSON = function(){
+		return this._date.toJSON();
+	}
+	/**
 	 * @public 
 	 * add delta years to datetime
 	**/

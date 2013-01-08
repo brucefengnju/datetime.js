@@ -1,50 +1,3 @@
-test('no args',function(){
-	var date = new DateTime();
-	var time = +(new Date());
-	return Math.abs(date.getTime() - time) < 1000;
-});
-test("from Datetime",function(){
-	var dateTime1 = new DateTime();
-	var datetime2 = new DateTime(dateTime1);
-	return dateTime1.getTime() === datetime2.getTime();
-});
-test('from Date',function(){
-	var time = new Date();
-	var dateTime = new DateTime(time);
-	return Math.abs(dateTime.getTime() - time.getTime())<1000;
-});
-test('from string',function(){
-	var time = new Date();
-	var datetime = new DateTime(time.toString());
-	return Math.abs(datetime.getTime() - time.getTime())<1000;
-});
-test('from year month day',function(){
-	var year = 2012,month = 11,day = 6;
-	var dateTime1 = new DateTime(year,month,day);
-	var dateTime2 = new DateTime(year,month,day);
-	return Math.abs(dateTime1.getTime()-dateTime2.getTime())<1000
-		  && dateTime1.getFullYear() === year
-		  && dateTime1.getMonth() === month
-		  && dateTime1.getDate() === day
-		  && !dateTime1.getHours()
-		  && !dateTime1.getMinutes()
-		  && !dateTime1.getSeconds()
-		  && !dateTime1.getMilliseconds();
-});
-test('from year/month/day/hour/minute/second',function(){
-	var year = 2012,month = 11, day = 6,hour = 15, minute = 40,second = 2;
-	var dateTime1 = new DateTime(year,month,day,hour,minute,second);
-	var dateTime2 = new DateTime(year,month,day,hour,minute,second);
-	return Math.abs(dateTime1.getTime()-dateTime2.getTime())<1000
-		&& dateTime1.getFullYear() === year
-		&& dateTime1.getMonth() === month
-		&& dateTime1.getDate() === day
-		&& dateTime1.getHours() === hour
-		&& dateTime1.getMinutes() === minute
-		&& dateTime1.getSeconds() === second
-		&& !dateTime1.getMilliseconds();
-});
-
 test('addYears',function(){
 	var date = new DateTime();
 	var year1 = date.getFullYear();
@@ -168,11 +121,6 @@ test('toString',function(){
 	console.log(shortDatestr);
 	console.log(date.toString());*/
 });
-test('toJSON',function(){
-	var date = new Date();
-	var dateTime = new DateTime(date);
-	return dateTime.toJSON() == date.toJSON();
-});
 test('parse',function(){
 	var datestr = "time is 2012-12-17 20:38:25";
 	var format = "time is yyyy-MM-dd HH:mm:ss";
@@ -183,30 +131,4 @@ test('parse',function(){
 	var shortDate = DateTime.parse(shortdatestr,shortformat);
 	console.log(shortDate.toString());
 	return DateTime.validDate(date) && DateTime.validDate(shortDate);
-});
-test('isLeapYear',function(){
-	var leapYear = DateTime.isLeapYear(2000);
-	var noLeapYear = DateTime.isLeapYear(2001);
-	return leapYear&&!noLeapYear;
-});
-test("now",function(){
-	return Math.abs(+new Date() - DateTime.now().getTime())<1000;
-});
-test("today",function(){
-	var dateTime = DateTime.today();
-	var time = new Date();
-	return dateTime.getFullYear() === time.getFullYear()
-	       && dateTime.getMonth() === time.getMonth()
-	       && dateTime.getDate() === time.getDate()
-	       && !dateTime.getHours()
-	       && !dateTime.getMinutes()
-	       && !dateTime.getSeconds()
-	       && !dateTime.getMilliseconds();
-});
-test('getDaysInMonth',function(){
-	var days1 = DateTime.getDaysInMonth(2012,1);
-	var days2 = DateTime.getDaysInMonth(2011,1);
-	var days3 = DateTime.getDaysInMonth(2012,2);
-	var days4 = DateTime.getDaysInMonth(2012,3);
-	return days1 === 29 && days2 === 28 && days3 === 31 && days4 === 30;
 });
